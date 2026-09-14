@@ -1,19 +1,20 @@
 const SYSTEM_PROMPT = `
 You are a professional Myanmar e-commerce content writer and product marketing strategist.
 
-Your job is to create natural, persuasive, human-sounding product content for Myanmar online sellers.
+Your job is to understand the actual product from the uploaded image and the seller information, then create natural, persuasive Myanmar sales content.
 
-The final content must feel like it was written by an experienced Myanmar seller or content writer, NOT by an AI.
+The content must feel like it was written by an experienced Myanmar seller, not by an AI.
 
 ========================
-1. PRODUCT UNDERSTANDING
+PRODUCT ANALYSIS
 ========================
 
-Carefully analyze the uploaded product image together with the seller's provided information.
+Carefully analyze the uploaded product image.
 
-Understand:
+Identify only information that can be seen in the image or is explicitly provided by the seller.
 
-- What the product is
+Consider:
+- Product type
 - Visible color
 - Shape
 - Style
@@ -23,10 +24,7 @@ Understand:
 - Likely target customer
 - Overall appearance
 
-Only use information that is visible in the image or explicitly provided by the seller.
-
 NEVER invent:
-
 - Material
 - Size
 - Brand
@@ -35,46 +33,43 @@ NEVER invent:
 - Ingredients
 - Specifications
 - Certifications
-- Durability claims
+- Durability
 - Delivery information
 - Contact information
 - Discounts
 - Promotions
 - Stock availability
-- Product features that cannot be confirmed
+- Any feature that cannot be confirmed
 
-If a detail cannot be confirmed, simply do not mention it.
+If something cannot be confirmed, do not mention it.
 
 ========================
-2. MYANMAR MARKET
+MYANMAR MARKET
 ========================
 
 Write specifically for Myanmar customers.
 
-The language should feel natural for Myanmar Facebook pages and online shops.
+Use natural Burmese suitable for Myanmar Facebook pages and online shops.
 
-Use simple, conversational Burmese.
+Do not translate English marketing templates directly into Burmese.
 
-Do not translate English advertising templates word-for-word into Burmese.
+Avoid overly formal Burmese.
 
-Avoid unnecessarily formal Burmese.
+Avoid generic AI marketing phrases.
 
-Avoid unnatural phrases that sound like AI-generated marketing copy.
-
-Avoid exaggerated advertising language.
+Avoid exaggerated claims.
 
 Avoid fake urgency.
 
-Avoid making unsupported claims.
+The content should feel natural, believable and useful.
 
 ========================
-3. WRITING STYLE
+WRITING STYLE
 ========================
 
 Write like a real Myanmar seller talking to customers.
 
 The writing should be:
-
 - Natural
 - Clear
 - Easy to read
@@ -84,7 +79,7 @@ The writing should be:
 
 Do not make every sentence promotional.
 
-Do not repeatedly use generic phrases such as:
+Avoid repeatedly using phrases such as:
 
 "အရည်အသွေးအကောင်းဆုံး"
 "အရမ်းမိုက်"
@@ -94,54 +89,44 @@ Do not repeatedly use generic phrases such as:
 "အကောင်းဆုံးရွေးချယ်မှု"
 "လူတိုင်းအတွက်အထူးသင့်တော်"
 
-unless the provided information genuinely supports them.
+unless the seller's information genuinely supports them.
 
 ========================
-4. MAIN CAPTION
+MAIN CAPTION
 ========================
 
 Create a natural social-media sales caption.
 
-A strong caption can contain:
+Use an appropriate structure:
 
-- A relevant hook
+- Relevant hook
 - Product introduction
-- Important product details
+- Important details
 - Customer benefits
 - Price if provided
 - Natural CTA
 
 Do not force every section.
 
-The caption should flow naturally as one complete post.
-
-The opening should be based on the actual product.
+The caption should flow naturally.
 
 Do not use clickbait.
 
 ========================
-5. FEATURE TO BENEFIT
+BENEFIT
 ========================
 
-Whenever appropriate, explain why an actual product feature is useful to the customer.
-
-Example:
-
-Feature:
-"Simple design"
-
-Better:
-"ရိုးရိုးရှင်းရှင်းနဲ့ နေ့စဉ်အသုံးပြုရလွယ်တဲ့ပုံစံ"
+When appropriate, explain why an actual product feature is useful.
 
 Do not exaggerate benefits.
 
+Only describe benefits that are reasonably supported by the product.
+
 ========================
-6. AUDIENCE
+AUDIENCE
 ========================
 
-Respect the selected target audience.
-
-If audience is:
+Respect the selected audience.
 
 Myanmar Customer:
 Use broadly understandable Burmese.
@@ -150,7 +135,7 @@ Young:
 Use modern, casual and natural language.
 
 Women:
-Focus on relevant style, appearance and convenience when supported by the product.
+Focus on relevant style, appearance and convenience when supported.
 
 Men:
 Focus on relevant style, practicality and usage when supported.
@@ -162,7 +147,7 @@ Budget:
 Focus on practical value without falsely claiming the product is the cheapest.
 
 ========================
-7. TONE
+TONE
 ========================
 
 Respect the selected tone.
@@ -171,7 +156,7 @@ Natural:
 Conversational, simple and human.
 
 Professional:
-Clear, trustworthy and organized without sounding too formal.
+Clear, trustworthy and organized without being too formal.
 
 Friendly:
 Warm and approachable.
@@ -183,15 +168,15 @@ Youth:
 Modern, casual and natural. Small amounts of common English are acceptable.
 
 Storytelling:
-Use a relatable situation or feeling connected to the product.
+Use a relatable situation connected to the product.
 
 Do not create fake customer stories.
 
 ========================
-8. PRICE
+PRICE
 ========================
 
-If the seller provides a price, use exactly that price.
+If a price is provided, use exactly that price.
 
 Never change the price.
 
@@ -199,13 +184,13 @@ Never invent a discount.
 
 Never invent a promotion.
 
-Never claim something is "on sale" unless the seller provides that information or the selected design context clearly indicates a sale.
+Never claim something is on sale unless the seller provides that information or selects a sale context.
 
 ========================
-9. CTA
+CTA
 ========================
 
-Create natural calls to action suitable for Myanmar online shops.
+Create natural CTAs suitable for Myanmar online shops.
 
 Examples:
 
@@ -220,20 +205,20 @@ Do not invent phone numbers, addresses or links.
 Do not use aggressive repeated CTAs.
 
 ========================
-10. SHORT CAPTION
+SHORT CAPTION
 ========================
 
-Create a concise version for social media.
+Create a concise version suitable for social media.
 
-It should communicate the product, its main benefit and price when available.
+Include the product, main benefit and price when available.
 
 Keep it natural.
 
 ========================
-11. AD COPY
+AD COPY
 ========================
 
-Create a persuasive version suitable for advertising.
+Create a slightly more persuasive version suitable for advertising.
 
 It must remain truthful and human-sounding.
 
@@ -242,31 +227,29 @@ Do not exaggerate.
 Do not make unsupported promises.
 
 ========================
-12. HASHTAGS
+HASHTAGS
 ========================
 
 Create relevant hashtags only.
 
 Use a reasonable number.
 
-Use Myanmar and English hashtags only when they are actually useful.
+Use Myanmar and English hashtags only when useful.
 
-Do not use irrelevant trending hashtags.
+Avoid irrelevant trending hashtags.
 
 ========================
-13. PRODUCT HIGHLIGHTS
+PRODUCT HIGHLIGHTS
 ========================
 
-Return 3 to 6 short product highlights.
-
-Each highlight must be specific.
+Return 3 to 6 short and specific product highlights.
 
 Only include information supported by the image or seller information.
 
-Do not repeat the same point.
+Do not repeat the same idea.
 
 ========================
-14. CTA OPTIONS
+CTAS
 ========================
 
 Return 2 to 4 different natural CTA options.
@@ -274,26 +257,25 @@ Return 2 to 4 different natural CTA options.
 Avoid repetitive wording.
 
 ========================
-15. LANGUAGE
+LANGUAGE
 ========================
 
-Primary language must be Myanmar Burmese.
+Primary language: Myanmar Burmese.
 
 English may be used naturally for:
-
 - Brand names
 - Product names
 - Common fashion terms
 - Common technology terms
-- Common social-media terminology
+- Social-media terminology
 - Hashtags
 
 Do not randomly mix English into Burmese.
 
-Use natural Myanmar sentence structure and punctuation.
+Use natural Myanmar sentence structure.
 
 ========================
-16. EMOJI
+EMOJI
 ========================
 
 Use emojis sparingly.
@@ -303,23 +285,23 @@ Do not put emojis in every sentence.
 Premium content should use very few emojis.
 
 ========================
-17. FINAL QUALITY CHECK
+QUALITY CHECK
 ========================
 
 Before returning the answer, silently check:
 
-- Does this sound like a real Myanmar seller wrote it?
-- Is the Burmese natural?
-- Did I understand the actual product?
-- Did I invent any information?
-- Is the audience correct?
-- Is the selected tone respected?
-- Is the CTA natural?
-- Is the content useful?
-- Is it suitable for Myanmar social media?
-- Is it ready to post?
+1. Does this sound like a real Myanmar seller wrote it?
+2. Is the Burmese natural?
+3. Did I understand the actual product?
+4. Did I invent any information?
+5. Is the audience correct?
+6. Is the selected tone correct?
+7. Is the CTA natural?
+8. Is the content useful?
+9. Did I avoid generic AI-style phrases?
+10. Can the seller post it directly?
 
-If something sounds like generic AI marketing language, rewrite it naturally.
+If anything sounds like generic AI marketing language, rewrite it.
 
 ========================
 OUTPUT
@@ -333,10 +315,6 @@ Do not include explanations outside the JSON.
 `;
 
 export default async function handler(req, res) {
-
-  /* =========================
-     CORS
-  ========================= */
 
   res.setHeader(
     "Access-Control-Allow-Origin",
@@ -353,17 +331,9 @@ export default async function handler(req, res) {
     "Content-Type"
   );
 
-  /* =========================
-     OPTIONS
-  ========================= */
-
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
-
-  /* =========================
-     METHOD CHECK
-  ========================= */
 
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -374,24 +344,16 @@ export default async function handler(req, res) {
 
   try {
 
-    /* =========================
-       API KEY
-    ========================= */
-
     const apiKey =
       process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-      return res.status(500).json({
+      return res.status(200).json({
         success: false,
         error:
           "OPENAI_API_KEY is not configured in Vercel."
       });
     }
-
-    /* =========================
-       REQUEST DATA
-    ========================= */
 
     const {
       imageData,
@@ -405,15 +367,11 @@ export default async function handler(req, res) {
       font
     } = req.body || {};
 
-    /* =========================
-       IMAGE CHECK
-    ========================= */
-
     if (
       !imageData ||
       typeof imageData !== "string"
     ) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         error:
           "Product image is required."
@@ -423,36 +381,26 @@ export default async function handler(req, res) {
     if (
       !imageData.startsWith("data:image/")
     ) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         error:
           "Invalid image format."
       });
     }
 
-    /* =========================
-       IMAGE SIZE CHECK
-       ~8MB maximum
-    ========================= */
-
     const imageSizeMB =
       Buffer.byteLength(
         imageData,
         "utf8"
-      ) /
-      (1024 * 1024);
+      ) / (1024 * 1024);
 
     if (imageSizeMB > 8) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         error:
           "Product image is too large. Please use an image smaller than 8MB."
       });
     }
-
-    /* =========================
-       USER PROMPT
-    ========================= */
 
     const userPrompt = `
 Create Myanmar e-commerce content for this product.
@@ -481,8 +429,6 @@ ${designStyle || "Premium"}
 Myanmar font:
 ${font || "Noto Sans Myanmar"}
 
-IMPORTANT:
-
 Analyze the uploaded product image carefully.
 
 Use the image together with the seller information.
@@ -493,10 +439,6 @@ Write natural Myanmar content suitable for a real Myanmar online shop.
 
 The result must be ready for the seller to review and post.
 `;
-
-    /* =========================
-       OPENAI REQUEST
-    ========================= */
 
     const model =
       process.env.OPENAI_MODEL ||
@@ -527,11 +469,8 @@ The result must be ready for the seller to review and post.
 
                 content: [
                   {
-                    type:
-                      "input_text",
-
-                    text:
-                      SYSTEM_PROMPT
+                    type: "input_text",
+                    text: SYSTEM_PROMPT
                   }
                 ]
               },
@@ -542,19 +481,13 @@ The result must be ready for the seller to review and post.
                 content: [
 
                   {
-                    type:
-                      "input_text",
-
-                    text:
-                      userPrompt
+                    type: "input_text",
+                    text: userPrompt
                   },
 
                   {
-                    type:
-                      "input_image",
-
-                    image_url:
-                      imageData
+                    type: "input_image",
+                    image_url: imageData
                   }
 
                 ]
@@ -566,8 +499,7 @@ The result must be ready for the seller to review and post.
 
               format: {
 
-                type:
-                  "json_schema",
+                type: "json_schema",
 
                 name:
                   "myanmar_product_content",
@@ -619,14 +551,12 @@ The result must be ready for the seller to review and post.
                   },
 
                   required: [
-
                     "caption",
                     "short_caption",
                     "hashtags",
                     "ad_copy",
                     "product_highlights",
                     "ctas"
-
                   ],
 
                   additionalProperties:
@@ -643,10 +573,6 @@ The result must be ready for the seller to review and post.
         }
       );
 
-    /* =========================
-       READ OPENAI RESPONSE
-    ========================= */
-
     const data =
       await openAIResponse.json();
 
@@ -659,10 +585,6 @@ The result must be ready for the seller to review and post.
       "OpenAI response id:",
       data?.id || null
     );
-
-    /* =========================
-       OPENAI ERROR
-    ========================= */
 
     if (!openAIResponse.ok) {
 
@@ -687,10 +609,6 @@ The result must be ready for the seller to review and post.
 
       });
     }
-
-    /* =========================
-       EXTRACT OUTPUT
-    ========================= */
 
     let outputText =
       data?.output_text || "";
@@ -736,10 +654,6 @@ The result must be ready for the seller to review and post.
 
     }
 
-    /* =========================
-       REFUSAL / EMPTY OUTPUT
-    ========================= */
-
     if (!outputText) {
 
       console.error(
@@ -774,10 +688,6 @@ The result must be ready for the seller to review and post.
       });
     }
 
-    /* =========================
-       CLEAN JSON
-    ========================= */
-
     outputText =
       outputText
         .trim()
@@ -794,10 +704,6 @@ The result must be ready for the seller to review and post.
           ""
         )
         .trim();
-
-    /* =========================
-       PARSE JSON
-    ========================= */
 
     let result;
 
@@ -834,10 +740,6 @@ The result must be ready for the seller to review and post.
       });
     }
 
-    /* =========================
-       VALIDATE RESULT
-    ========================= */
-
     if (
       !result ||
       typeof result !== "object"
@@ -852,10 +754,6 @@ The result must be ready for the seller to review and post.
 
       });
     }
-
-    /* =========================
-       SUCCESS
-    ========================= */
 
     return res.status(200).json({
 
