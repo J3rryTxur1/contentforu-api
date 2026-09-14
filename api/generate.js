@@ -47,12 +47,12 @@ product_highlights must be an array of strings.
 ctas must be an array of strings.
 `;
 
+
 export default async function handler(req, res) {
-  /*
-   * =========================
-   * CORS
-   * =========================
-   */
+
+  // =========================
+  // CORS
+  // =========================
 
   res.setHeader(
     "Access-Control-Allow-Origin",
@@ -69,21 +69,19 @@ export default async function handler(req, res) {
     "Content-Type"
   );
 
-  /*
-   * =========================
-   * OPTIONS
-   * =========================
-   */
+
+  // =========================
+  // OPTIONS
+  // =========================
 
   if (req.method === "OPTIONS") {
     return res.status(204).end();
   }
 
-  /*
-   * =========================
-   * ONLY POST
-   * =========================
-   */
+
+  // =========================
+  // ONLY POST
+  // =========================
 
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -91,40 +89,32 @@ export default async function handler(req, res) {
     });
   }
 
+
   try {
-    /*
-     * =========================
-     * API KEY
-     * =========================
-     */
+
+    // =========================
+    // API KEY
+    // =========================
 
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({
-        error:
-          "OPENAI_API_KEY is not configured."
+        error: "OPENAI_API_KEY is not configured."
       });
     }
 
-    /*
-     * =========================
-     * REQUEST DATA
-     * =========================
-     */
+
+    // =========================
+    // REQUEST DATA
+    // =========================
 
     const body = req.body || {};
 
     const imageData = body.imageData || "";
-
-    const productName =
-      body.productName || "";
-
-    const price =
-      body.price || "";
-
-    const description =
-      body.description || "";
+    const productName = body.productName || "";
+    const price = body.price || "";
+    const description = body.description || "";
 
     const audience =
       body.audience || "မြန်မာ Customer";
@@ -141,51 +131,60 @@ export default async function handler(req, res) {
     const font =
       body.font || "Noto Sans Myanmar";
 
-    /*
-     * =========================
-     * IMAGE CHECK
-     * =========================
-     */
+
+    // =========================
+    // IMAGE CHECK
+    // =========================
 
     if (!imageData) {
       return res.status(400).json({
-        error:
-          "Product image is required."
+        error: "Product image is required."
       });
     }
 
-    /*
-     * =========================
-     * IMAGE FORMAT CHECK
-     * =========================
-     */
 
-    if (
-      !imageData.startsWith(
-        "data:image/"
-      )
-    ) {
+    if (!imageData.startsWith("data:image/")) {
       return res.status(400).json({
-        error:
-          "Invalid product image format."
+        error: "Invalid product image format."
       });
     }
 
-    /*
-     * =========================
-     * MODEL
-     * =========================
-     */
+
+    // =========================
+    // IMAGE SIZE CHECK
+    // =========================
+
+    // Prevent accidentally sending an extremely large request.
+    // The frontend normally compresses the image first.
+
+    const approximateImageSize =
+      Math.ceil(
+        (imageData.length * 3) / 4
+      );
+
+    const MAX_IMAGE_SIZE =
+      8 * 1024 * 1024;
+
+    if (approximateImageSize > MAX_IMAGE_SIZE) {
+      return res.status(413).json({
+        error:
+          "Product image is too large. Please upload a smaller image."
+      });
+    }
+
+
+    // =========================
+    // MODEL
+    // =========================
 
     const model =
       process.env.OPENAI_MODEL ||
       "gpt-5.6-luna";
 
-    /*
-     * =========================
-     * USER PROMPT
-     * =========================
-     */
+
+    // =========================
+    // USER PROMPT
+    // =========================
 
     const userPrompt = `
 Analyze the attached product image carefully.
@@ -224,6 +223,7 @@ CONTENT REQUIREMENTS:
 Write the main caption naturally in Burmese.
 
 The caption should:
+
 - immediately communicate what the product is
 - mention useful visible/provided characteristics
 - feel natural for Myanmar customers
@@ -243,251 +243,292 @@ Create 2-4 natural CTAs.
 
 Do NOT invent information that is not visible in the image or provided by the seller.
 
+If the image does not clearly show a specific characteristic, do not claim it as fact.
+
+If the seller description is empty, rely only on information that can reasonably be observed from the image.
+
 Return ONLY valid JSON.
 `;
 
-    /*
-     * =========================
-     * OPENAI REQUEST
-     * =========================
-     */
 
-    const openAIResponse =
-      await fetch(
-        "https://api.openai.com/v1/responses",
-        {
-          method: "POST",
+    // =========================
+    // OPENAI REQUEST
+    // =========================
 
-          headers: {
-            "Content-Type":
-              "application/json",
+    const openAIResponse = await fetch(
+      "https://api.openai.com/v1/responses",
+      {
+        method: "POST",
 
-            Authorization:
-              `Bearer ${apiKey}`
-          },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
 
-          body: JSON.stringify({
-            model,
+        body: JSON.stringify({
 
-            input: [
-              {
-                role: "system",
+          model,
 
-                content: [
-                  {
-                    type: "input_text",
-                    text: SYSTEM_PROMPT
-                  }
-                ]
-              },
+          input: [
 
-              {
-                role: "user",
+            {
+              role: "system",
 
-                content: [
-                  {
-                    type: "input_text",
-                    text: userPrompt
+              content: [
+                {
+                  type: "input_text",
+                  text: SYSTEM_PROMPT
+                }
+              ]
+            },
+
+            {
+              role: "user",
+
+              content: [
+
+                {
+                  type: "input_text",
+                  text: userPrompt
+                },
+
+                {
+                  type: "input_image",
+                  image_url: imageData
+                }
+
+              ]
+            }
+
+          ],
+
+
+          // =========================
+          // STRUCTURED JSON OUTPUT
+          // =========================
+
+          text: {
+            format: {
+              type: "json_schema",
+
+              name: "myanmar_product_content",
+
+              strict: true,
+
+              schema: {
+
+                type: "object",
+
+                properties: {
+
+                  caption: {
+                    type: "string"
                   },
 
-                  {
-                    type: "input_image",
-                    image_url: imageData
-                  }
-                ]
-              }
-            ],
+                  short_caption: {
+                    type: "string"
+                  },
 
-            /*
-             * Structured JSON output.
-             * OpenAI Responses API supports
-             * JSON Schema through text.format.
-             */
+                  hashtags: {
+                    type: "string"
+                  },
 
-            text: {
-              format: {
-                type: "json_schema",
+                  ad_copy: {
+                    type: "string"
+                  },
 
-                name:
-                  "myanmar_product_content",
+                  product_highlights: {
+                    type: "array",
 
-                strict: true,
-
-                schema: {
-                  type: "object",
-
-                  properties: {
-                    caption: {
+                    items: {
                       type: "string"
-                    },
-
-                    short_caption: {
-                      type: "string"
-                    },
-
-                    hashtags: {
-                      type: "string"
-                    },
-
-                    ad_copy: {
-                      type: "string"
-                    },
-
-                    product_highlights: {
-                      type: "array",
-
-                      items: {
-                        type: "string"
-                      }
-                    },
-
-                    ctas: {
-                      type: "array",
-
-                      items: {
-                        type: "string"
-                      }
                     }
                   },
 
-                  required: [
-                    "caption",
-                    "short_caption",
-                    "hashtags",
-                    "ad_copy",
-                    "product_highlights",
-                    "ctas"
-                  ],
+                  ctas: {
+                    type: "array",
 
-                  additionalProperties:
-                    false
-                }
+                    items: {
+                      type: "string"
+                    }
+                  }
+
+                },
+
+                required: [
+                  "caption",
+                  "short_caption",
+                  "hashtags",
+                  "ad_copy",
+                  "product_highlights",
+                  "ctas"
+                ],
+
+                additionalProperties: false
+
               }
-            }
-          })
-        }
-      );
 
-    /*
-     * =========================
-     * READ OPENAI RESPONSE
-     * =========================
-     */
+            }
+          }
+
+        })
+      }
+    );
+
+
+    // =========================
+    // READ OPENAI RESPONSE
+    // =========================
 
     const data =
       await openAIResponse.json();
 
-    /*
-     * =========================
-     * OPENAI ERROR
-     * =========================
-     */
+
+    // =========================
+    // OPENAI ERROR
+    // =========================
 
     if (!openAIResponse.ok) {
+
       console.error(
         "OpenAI API Error:",
-        data
+        JSON.stringify(data)
       );
 
-      return res.status(
-        openAIResponse.status
-      ).json({
+      return res.status(502).json({
+
         error:
           data?.error?.message ||
-          "OpenAI request failed."
+          "OpenAI request failed.",
+
+        openai_status:
+          openAIResponse.status,
+
+        openai_type:
+          data?.error?.type || null,
+
+        openai_code:
+          data?.error?.code || null
+
       });
     }
 
-    /*
-     * =========================
-     * EXTRACT TEXT
-     * =========================
-     *
-     * Do NOT depend only on
-     * data.output_text.
-     *
-     * Raw Responses API data contains
-     * generated content inside output.
-     */
+
+    // =========================
+    // EXTRACT TEXT
+    // =========================
 
     let outputText = "";
 
-    /*
-     * First try output_text if available.
-     */
+
+    // First try output_text.
 
     if (
-      typeof data.output_text ===
-      "string" &&
+      typeof data.output_text === "string" &&
       data.output_text.trim()
     ) {
+
       outputText =
         data.output_text.trim();
+
     }
 
-    /*
-     * Otherwise extract from output[]
-     */
+
+    // =========================
+    // FALLBACK: output[]
+    // =========================
 
     if (
       !outputText &&
       Array.isArray(data.output)
     ) {
+
       for (
         const outputItem of data.output
       ) {
+
         if (
           outputItem &&
           Array.isArray(
             outputItem.content
           )
         ) {
+
           for (
             const contentItem
               of outputItem.content
           ) {
+
             if (
               contentItem &&
-              typeof contentItem.text ===
-                "string"
+              typeof contentItem.text === "string"
             ) {
+
               outputText +=
                 contentItem.text;
+
             }
+
           }
+
         }
+
       }
+
     }
+
 
     outputText =
       outputText.trim();
 
-    /*
-     * =========================
-     * EMPTY RESPONSE
-     * =========================
-     */
+
+    // =========================
+    // CHECK RESPONSE STATUS
+    // =========================
+
+    if (
+      !outputText &&
+      data.status
+    ) {
+
+      console.error(
+        "OpenAI Response Status:",
+        data.status
+      );
+
+    }
+
+
+    // =========================
+    // EMPTY RESPONSE
+    // =========================
 
     if (!outputText) {
+
       console.error(
         "OpenAI returned no text:",
         JSON.stringify(data)
       );
 
       return res.status(502).json({
+
         error:
-          "AI returned an empty response."
+          "AI returned an empty response.",
+
+        response_status:
+          data?.status || null,
+
+        response_id:
+          data?.id || null
+
       });
+
     }
 
-    /*
-     * =========================
-     * REMOVE CODE FENCES
-     * =========================
-     *
-     * Safety fallback in case the
-     * model returns ```json ... ```
-     */
+
+    // =========================
+    // REMOVE CODE FENCES
+    // =========================
 
     outputText =
       outputText
@@ -505,18 +546,20 @@ Return ONLY valid JSON.
         )
         .trim();
 
-    /*
-     * =========================
-     * PARSE JSON
-     * =========================
-     */
+
+    // =========================
+    // PARSE JSON
+    // =========================
 
     let result;
 
     try {
+
       result =
         JSON.parse(outputText);
+
     } catch (parseError) {
+
       console.error(
         "JSON Parse Error:",
         parseError
@@ -528,55 +571,58 @@ Return ONLY valid JSON.
       );
 
       return res.status(502).json({
+
         error:
           "AI returned invalid JSON.",
+
         raw:
-          outputText.slice(0, 1000)
+          outputText.slice(0, 1500)
+
       });
+
     }
 
-    /*
-     * =========================
-     * VALIDATE RESULT
-     * =========================
-     */
+
+    // =========================
+    // VALIDATE RESULT
+    // =========================
 
     if (
-      typeof result.caption !==
-      "string"
+      typeof result.caption !== "string"
     ) {
       result.caption = "";
     }
 
+
     if (
-      typeof result.short_caption !==
-      "string"
+      typeof result.short_caption !== "string"
     ) {
       result.short_caption = "";
     }
 
+
     if (
-      typeof result.hashtags !==
-      "string"
+      typeof result.hashtags !== "string"
     ) {
       result.hashtags = "";
     }
 
+
     if (
-      typeof result.ad_copy !==
-      "string"
+      typeof result.ad_copy !== "string"
     ) {
       result.ad_copy = "";
     }
+
 
     if (
       !Array.isArray(
         result.product_highlights
       )
     ) {
-      result.product_highlights =
-        [];
+      result.product_highlights = [];
     }
+
 
     if (
       !Array.isArray(
@@ -586,13 +632,13 @@ Return ONLY valid JSON.
       result.ctas = [];
     }
 
-    /*
-     * =========================
-     * SUCCESS
-     * =========================
-     */
+
+    // =========================
+    // SUCCESS
+    // =========================
 
     return res.status(200).json({
+
       caption:
         result.caption,
 
@@ -610,15 +656,15 @@ Return ONLY valid JSON.
 
       ctas:
         result.ctas
+
     });
+
 
   } catch (error) {
 
-    /*
-     * =========================
-     * SERVER ERROR
-     * =========================
-     */
+    // =========================
+    // SERVER ERROR
+    // =========================
 
     console.error(
       "Server Error:",
@@ -626,9 +672,13 @@ Return ONLY valid JSON.
     );
 
     return res.status(500).json({
+
       error:
         error?.message ||
         "Server error."
+
     });
+
   }
+
 }
